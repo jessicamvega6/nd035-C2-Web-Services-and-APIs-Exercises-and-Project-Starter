@@ -5,7 +5,9 @@ import java.util.Objects;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -19,10 +21,19 @@ public class MapsClient {
     private final WebClient client;
     private final ModelMapper mapper;
 
+    @Value("${maps.api.name}")
+    private String serviceName;
+
+
+    private RestTemplate restTemplate;
+
+
     public MapsClient(WebClient maps,
-            ModelMapper mapper) {
+                      ModelMapper mapper,
+                      RestTemplate restTemplate) {
         this.client = maps;
         this.mapper = mapper;
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -51,4 +62,21 @@ public class MapsClient {
             return location;
         }
     }
+
+
+    public Location getAddressWithServiceName(Location location) {
+        String url = "http://"+ serviceName +"/maps/?lat="+location.getLat()+"&lon="+location.getLon();
+
+        try {
+            Address address = restTemplate.getForObject(url, Address.class);
+            mapper.map(Objects.requireNonNull(address), location);
+
+        } catch (Exception e) {
+            log.warn("Map service is down");
+            return location;
+        }
+
+        return location;
+    }
+
 }

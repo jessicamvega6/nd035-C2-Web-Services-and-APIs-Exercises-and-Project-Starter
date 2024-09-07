@@ -1,9 +1,15 @@
 package com.udacity.vehicles.client.prices;
 
+import com.udacity.vehicles.client.maps.Address;
+import com.udacity.vehicles.domain.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Objects;
 
 /**
  * Implements a class to interface with the Pricing Client for price data.
@@ -15,8 +21,17 @@ public class PriceClient {
 
     private final WebClient client;
 
-    public PriceClient(WebClient pricing) {
+    @Value("${pricing.api.name}")
+    private String serviceName;
+
+
+    private RestTemplate restTemplate;
+
+
+    public PriceClient(WebClient pricing,
+                       RestTemplate restTemplate) {
         this.client = pricing;
+        this.restTemplate = restTemplate;
     }
 
     // In a real-world application we'll want to add some resilience
@@ -46,6 +61,22 @@ public class PriceClient {
         } catch (Exception e) {
             log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
         }
+        return "(consult price)";
+    }
+
+    public String getAddressWithServiceName(Long vehicleId) {
+        String url = "http://"+ serviceName + "/services/price?vehicleId=" + vehicleId;
+        try {
+            Price price =  restTemplate.getForObject(url, Price.class);
+            if (price == null || (price.getPrice()==null)) {
+                log.error("Price not found for vehicle {}", vehicleId);
+            }
+            return String.format("%s %s", price.getCurrency(), price.getPrice());
+
+        } catch (Exception e) {
+            log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
+        }
+
         return "(consult price)";
     }
 }
