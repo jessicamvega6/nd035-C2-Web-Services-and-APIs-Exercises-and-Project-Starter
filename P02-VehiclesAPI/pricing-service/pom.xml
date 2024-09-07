@@ -80,7 +80,7 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-netflix-eureka-client</artifactId>
 		</dependency>
-		<!--  		make microservice discoverable end-->
+<!--  		make microservice discoverable end-->
 	</dependencies>
 
 	<dependencyManagement>
