@@ -13,6 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,31 +27,40 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@XmlRootElement(name = "car")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Car {
 
     @Id
     @GeneratedValue
+    @XmlElement
     private Long id;
 
     @CreatedDate
+    @XmlElement
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @XmlElement
     private LocalDateTime modifiedAt;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @XmlElement
     private Condition condition;
 
     @Valid
     @Embedded
+    @XmlElement
     private Details details = new Details();
 
     @Valid
     @Embedded
+    @XmlElement
     private Location location = new Location(0d, 0d);
 
     @Transient
+    @XmlElement
     private String price;
 
     public Long getId() {
