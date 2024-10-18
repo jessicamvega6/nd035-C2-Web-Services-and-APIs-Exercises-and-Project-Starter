@@ -19,13 +19,14 @@ public class PriceClient {
 
     private static final Logger log = LoggerFactory.getLogger(PriceClient.class);
 
+    //Note leaving the WebClient client and associated code for the reviewer to answer a question posed during submission.
     private final WebClient client;
 
     @Value("${pricing.api.name}")
     private String serviceName;
 
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
 
     public PriceClient(WebClient pricing,

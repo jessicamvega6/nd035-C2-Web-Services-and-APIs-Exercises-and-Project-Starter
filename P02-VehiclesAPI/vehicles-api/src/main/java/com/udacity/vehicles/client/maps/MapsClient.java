@@ -18,6 +18,7 @@ public class MapsClient {
 
     private static final Logger log = LoggerFactory.getLogger(MapsClient.class);
 
+    //Note leaving the WebClient client and associated code for the reviewer to answer a question posed during submission.
     private final WebClient client;
     private final ModelMapper mapper;
 
@@ -25,7 +26,7 @@ public class MapsClient {
     private String serviceName;
 
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
 
     public MapsClient(WebClient maps,
